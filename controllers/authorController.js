@@ -181,7 +181,7 @@ exports.author_delete_post = (req, res, next) => {
 };
 
 // Display book update form on GET.
-exports.book_update_get = (req, res, next) => {
+exports.author_update_get = (req, res, next) => {
   // Get book, authors and genres for form.
   async.parallel(
     {
@@ -228,7 +228,7 @@ exports.book_update_get = (req, res, next) => {
 };
 
 // Handle book update on POST.
-exports.book_update_post = [
+exports.author_update_post = [
   // Convert the genre to an array
   (req, res, next) => {
     if (!Array.isArray(req.body.genre)) {
@@ -239,25 +239,25 @@ exports.book_update_post = [
   },
 
   // Validate and sanitize fields.
-  body("title", "Title must not be empty.")
+  validator.body("title", "Title must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("author", "Author must not be empty.")
+  validator.body("author", "Author must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("summary", "Summary must not be empty.")
+  validator.body("summary", "Summary must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("isbn", "ISBN must not be empty").trim().isLength({ min: 1 }).escape(),
-  body("genre.*").escape(),
+  validator.body("isbn", "ISBN must not be empty").trim().isLength({ min: 1 }).escape(),
+  validator.body("genre.*").escape(),
 
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
-    const errors = validationResult(req);
+    const errors = validator.validationResult(req);
 
     // Create a Book object with escaped/trimmed data and old id.
     const book = new Book({

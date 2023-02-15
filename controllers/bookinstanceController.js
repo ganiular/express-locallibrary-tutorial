@@ -1,4 +1,5 @@
 const BookInstance = require("../data/models/bookinstance");
+const validator = require('express-validator');
 
 // Display list of all BookInstances.
 exports.bookinstance_list = function (req, res, next) {
@@ -56,13 +57,13 @@ exports.bookinstance_create_get = (req, res, next) => {
 // Handle BookInstance create on POST.
 exports.bookinstance_create_post = [
   // Validate and sanitize fields.
-  body("book", "Book must be specified").trim().isLength({ min: 1 }).escape(),
-  body("imprint", "Imprint must be specified")
+  validator.body("book", "Book must be specified").trim().isLength({ min: 1 }).escape(),
+  validator.body("imprint", "Imprint must be specified")
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("status").escape(),
-  body("due_back", "Invalid date")
+  validator.body("status").escape(),
+  validator.body("due_back", "Invalid date")
     .optional({ checkFalsy: true })
     .isISO8601()
     .toDate(),
@@ -70,7 +71,7 @@ exports.bookinstance_create_post = [
   // Process request after validation and sanitization.
   (req, res, next) => {
     // Extract the validation errors from a request.
-    const errors = validationResult(req);
+    const errors = validator.validationResult(req);
 
     // Create a BookInstance object with escaped and trimmed data.
     const bookinstance = new BookInstance({
